@@ -1,0 +1,35 @@
+~/projects/tinb-mingwang/plotter ~/projects/tinb-mingwang/plotter
+output directory exists
+loading modules...
+modules loaded.
+~/projects ~/projects/tinb-mingwang/plotter ~/projects/tinb-mingwang/plotter
+activating environment...
+environment activated.
+~/projects/tinb-mingwang/plotter ~/projects/tinb-mingwang/plotter
+starting plot.py...
+making history for Vp_0.08_
+making evolution for Vp_0.08_
+making cross section for Vp_0.08_
+304 719
+making history for Vp_0.26_
+making evolution for Vp_0.26_
+making cross section for Vp_0.26_
+215 462
+making history for Vp_0.24_
+making evolution for Vp_0.24_
+making cross section for Vp_0.24_
+191 356
+making history for Vp_0.17_
+making evolution for Vp_0.17_
+making cross section for Vp_0.17_
+122 270
+making history for Vp_0.29_
+making evolution for Vp_0.29_
+making cross section for Vp_0.29_
+219 393
+making history for Vp_0.39_
+making evolution for Vp_0.39_
+making cross section for Vp_0.39_
+391 605
+finished plotting
+~/projects/tinb-mingwang/plotter

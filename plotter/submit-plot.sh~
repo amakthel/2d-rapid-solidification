@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#SBATCH --partition=short
+#sbatch --nodes=1
+#sbatch --cpus-per-task=1
+#sbatch --output=/home/i.benjamin/scripts/projects/alag-mingwang/rewritten_code/plotter/output/output.txt
+#sbatch --error=/home/i.benjamin/scripts/projects/alag-mingwang/rewritten_code/plotter/output/error.txt
+#sbatch --mem=30G
+
+pushd /home/i.benjamin/scripts/projects/alag_mingwang/rewritten_code/plotter/
+echo "loading modules..."
+module load anaconda3/2024.06
+echo "modules loaded."
+pushd /home/i.benjamin/scripts/projects/
+echo "activating environment..."
+source activate ./plotter/
+popd
+echo "starting main.py..."
+python3 main.py
+echo "finished plotting"
+popd
+

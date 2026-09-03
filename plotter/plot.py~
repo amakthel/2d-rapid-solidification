@@ -1,0 +1,33 @@
+import matplotlib.animation as ani
+import matplotlib.pyplot as plt
+import numpy as np
+
+tag = "try-out_"
+data_dir = "../data/"
+plots_dir = "../plots/"
+frames = 110
+frame_delay = 200
+
+# load history data ...
+c_history = np.load(data_dir + "c_history_tep.txt")
+# load a single snapshot ...
+c_init_snapshot = np.load(data_dir)
+# plot history data using imgshow ...
+
+# plot single snapshot using imshow ...
+
+
+# write step function for a video of the snapshots
+## implement something clean for loading and discarding the snapshots as
+## smoothly as possible--we don't want all 100 of them chilling out in memory.
+def func(frames):
+    with open("") as dat:
+        # set some shit to dat ...
+    return [frame]
+
+# declare funcAnimation
+anim = ani.funcAnimation(func, anim_fig, frames, interval=frame_delay)
+# save history image
+anim.save(plots_dir + tag + "evolution.gif")
+# save snapshot animation
+hist_fig.savefig(plots_dir + tag + "history.gif")
