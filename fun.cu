@@ -49,8 +49,8 @@ inline constexpr bool if_Vp_ramp{false}; // Vp_ramp()  x_pull_back() changed fro
 #define    num_orientation  1  // number of orientations
 
 #define    cinf    (0.632514105)  // at% Ti cs = 0.515285917
-#define    SS      5     // S = W/W0, INT
-#define    W0      0.25    // nm, capillary length
+#define    SS      1     // S = W/W0, INT
+#define    W0      1.0    // nm, capillary length
 #define    Gamma   (199.0)   // K*nm, Gibbs-Thomson coefficient. Taken as reasonable compromise between 203.359 and 194.517.
 #define    muk0    (0.57)  // nm/ns/K, interface kinetic coefficient, unprincpled selection between 0.7 and 0.49
 #define    tau0    ( pow2(SS*W0)/(Gamma*muk0) ) // ns, 5^2/196/0.5 = 0.2551 ns

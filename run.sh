@@ -8,7 +8,7 @@ Nx_all=$((12 * 64))
 Ny_all=$((13 * 64))
 
 material="Ti-Nb"
-name="flat-small"
+name="flat-large"
 gpu_num=1
 velocity=$(awk "BEGIN {printf 0.240 }") # m/s, pulling velocity
 gradient=$(awk "BEGIN {printf 10*0.001 }") # K/nm, temperature gradient
