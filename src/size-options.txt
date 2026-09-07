@@ -1,0 +1,9 @@
+consider using 192, which is 3 * 64, for your Nx and Ny values
+consider using 512, which is 8 * 64, for your Nx and Ny values
+consider using 832, which is 13 * 64, for your Nx and Ny values
+consider using 1152, which is 18 * 64, for your Nx and Ny values
+consider using 1472, which is 23 * 64, for your Nx and Ny values
+consider using 1792, which is 28 * 64, for your Nx and Ny values
+consider using 2112, which is 33 * 64, for your Nx and Ny values
+consider using 2432, which is 38 * 64, for your Nx and Ny values
+consider using 2752, which is 43 * 64, for your Nx and Ny values

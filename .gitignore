@@ -5,6 +5,7 @@ tmp/
 
 plots/
 init/
+src/seq
 **/data
 *~
 Ti-Nb:*
