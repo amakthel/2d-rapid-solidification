@@ -8,10 +8,10 @@ Nx_all=$((12 * 64))
 Ny_all=$((13 * 64))
 
 material="Ti-Nb"
-name="flat-large"
+name="ramped-large"
 gpu_num=1
-velocity=$(awk "BEGIN {printf 0.240 }") # m/s, pulling velocity
-gradient=$(awk "BEGIN {printf 10*0.001 }") # K/nm, temperature gradient
+velocity=$(awk "BEGIN {printf 0.0842 }") # m/s, pulling velocity
+gradient=$(awk "BEGIN {printf 18*0.001 }") # K/nm, temperature gradient
 
 tag="${material}:${name}-${gpu_num}-${velocity}-${gradient}"
 
@@ -61,16 +61,16 @@ cat << EOF > ${sbatch_name}
 #!/bin/env sh
 #SBATCH --job-name="${job_name}"
 #SBATCH --partition=${partition}
-#SBATCH --gres=gpu:a100:${gpu_num}
+#SBATCH --gres=gpu:${gpu_num}
 #SBATCH --mem=8Gb
 #SBATCH --nodes=1
 #SBATCH --output="${out_name}"
 #SBATCH --error="${error_name}"
 #SBATCH --time=0${run_time}:00:00
 
-module load cuda/13.2.0
+module load cuda/12.3.0
 
-nvcc -arch=sm_80 \\
+nvcc -arch=sm_70 \\
     --std=c++17 \\
     -Dtotal_time=${total_time} \\
     -Dif_load=${if_load} \\

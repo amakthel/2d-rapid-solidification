@@ -19,7 +19,7 @@ using namespace std;
 #define    ifTFC       1 // temperature field calculation (TFC) or frozen temperature approximation (FTA)
 #define    if_noise    0
 
-inline constexpr bool if_Vp_ramp{false}; // Vp_ramp()  x_pull_back() changed from directive to constexpr
+inline constexpr bool if_Vp_ramp{true}; // Vp_ramp()  x_pull_back() changed from directive to constexpr
 
 #define    if_output_field_history  1 // save offset.txt and c_history_temp.txt
 #define    if_start_from_step0      1
