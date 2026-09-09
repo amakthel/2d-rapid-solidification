@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-
 # Nx_all=1024
 # Ny_all=768
 
@@ -10,7 +9,7 @@ Ny_all=$((13 * 64))
 material="Ti-Nb"
 name="ramped-large"
 gpu_num=1
-velocity=$(awk "BEGIN {printf 0.0842 }") # m/s, pulling velocity
+velocity=$(awk "BEGIN {printf 0.0842 }")   # m/s, pulling velocity
 gradient=$(awk "BEGIN {printf 18*0.001 }") # K/nm, temperature gradient
 
 tag="${material}:${name}-${gpu_num}-${velocity}-${gradient}"
@@ -20,8 +19,8 @@ total_time=$(awk "BEGIN {printf 120*1000 }") # ns
 if_load=0
 
 eps1=$(awk "BEGIN {printf 0.012 }") # anisotropy of the interfacial free energy
-eps2=$(awk "BEGIN {printf 0 }") # anisotropy of the interfacial free energy
-epk1=$(awk "BEGIN {printf 0.1 }") # anisotropy of the interfacial free energy
+eps2=$(awk "BEGIN {printf 0 }")     # anisotropy of the interfacial free energy
+epk1=$(awk "BEGIN {printf 0.1 }")   # anisotropy of the interfacial free energy
 path_input="$(pwd)/${tag}"
 run_time=8
 num_pending_threshold=10
@@ -31,18 +30,18 @@ random_seed=$(awk "BEGIN {printf 0 }")
 
 ######################################################################## sleep if too many jobs are waiting
 
-pending () {
-    num_pending=$(squeue --me -h -t pending -p ${partition} -r | wc -l)
+pending() {
+	num_pending=$(squeue --me -h -t pending -p ${partition} -r | wc -l)
 }
 pending
 
 # echo $num_pending
 # echo $num_pending_threshold
 # echo "got to the pending loop"
-while (( num_pending >= num_pending_threshold )); do
-    echo "sleeping ${sleep_time}\n"
-    sleep $sleep_time
-    pending
+while test "$num_pending" -gt $num_pending_threshold; do
+	printf 'sleeping %s\n' "$sleep_time"
+	sleep $sleep_time
+	pending
 done
 
 #######################################################################
@@ -58,7 +57,7 @@ error_name="${path_input}/error_${tag}.txt"
 # discovery has cuda/12.1 as its most recent version
 # explorer has cuda/13.2.0 as its most recent version
 # aicr has cuda/13.1.1 as its most recent version
-cat << EOF > ${sbatch_name}
+cat <<EOF >"${sbatch_name}"
 #!/bin/env sh
 #SBATCH --job-name="${job_name}"
 #SBATCH --partition=${partition}
@@ -95,23 +94,23 @@ echo "\n########################################\n" >> ${path_input}/out.txt
 EOF
 
 ####################################################################### RELAUNCH SETUP
-mkdir "${path_input}"
-mkdir "${path_input}/data"
+mkdir -p "${path_input}/data"
 mkdir "${path_input}/init"
 # mkdir "${path_input}/src"
 
 sed '25c\
-#define    if_start_from_step0      0' "${source_name}" > "${path_input}/${source_name}" # turns off starting at step 0
+#define    if_start_from_step0      0' "${source_name}" >"${path_input}/${source_name}" # turns off starting at step 0
 sed '16c\
     -Dif_load=1 \\
 17c\
     -Dpath_input=\\\"./.\\\" \\
-10i#SBATCH --array=1-3%1' "${sbatch_name}" > "${path_input}/${sbatch_name}"
+10i#SBATCH --array=1-3%1' "${sbatch_name}" >"${path_input}/${sbatch_name}"
 #######################################################################
 
 notif=$(sbatch "${sbatch_name}")
 firstjobnum=$(echo "${notif}" | awk '/[0-9.]+/ { print $4 }')
-echo $notif
-pushd "${path_input}/"
-sbatch --depend=afterany:$firstjobnum "${sbatch_name}"
-popd
+echo "$notif"
+prev_dir="$(pwd)"
+cd "${path_input}/" || exit 1
+sbatch --depend=afterany:"$firstjobnum" "${sbatch_name}"
+cd "$prev_dir" || exit 1

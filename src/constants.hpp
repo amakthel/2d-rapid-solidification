@@ -8,14 +8,14 @@
 // 1 noFlux
 // 2 dirichlet
 namespace Parameters {
-enum class model {
-  modelA,
-  modelB,
-  modelCALPHAD,
+enum class Model {
+  A,
+  B,
+  CALPHAD,
 };
-inline constexpr auto simModel{model::modelCALPHAD};
-inline constexpr bool ifTFC{true};
+inline constexpr auto simModel{Model::CALPHAD};
 inline constexpr bool if_noise{true};
+inline constexpr bool if_load{false};
 inline constexpr bool if_Vp_ramp{false};
 inline constexpr bool if_output_field_history{true};
 inline constexpr bool if_start_from_step0{true};
@@ -111,13 +111,10 @@ inline constexpr std::size_t dj{1};
 inline constexpr std::size_t BLOCK_SIZE_X{32};
 inline constexpr std::size_t BLOCK_SIZE_Y{8};
 
-// #define    total_time    (100*1000) // ns
-inline constexpr std::size_t num_fields_output{120}; // output fields
-inline constexpr std::size_t num_tip_output{10};     // output tip information
-inline constexpr std::size_t num_check_point_output{120}; // output check points
-// #define    run_time (8) // hours
-// #define    if_load  0 // 0: start from initial; 1: read check point
-// #define    path_input  "../eps0.02_Vp1_gamma0_gamma0/"
+constexpr std::size_t num_output_files{120};
+inline constexpr std::size_t num_fields_output{num_output_files};
+inline constexpr std::size_t num_tip_output{num_output_files};
+inline constexpr std::size_t num_check_point_output{num_output_files};
 
 using std::numbers::pi;
 inline constexpr std::size_t num_orientation{1}; // number of orientations
@@ -177,6 +174,7 @@ inline constexpr std::size_t jmax{Ny - 2};
 inline constexpr std::size_t jTmin{1};
 inline constexpr std::size_t jTmax{NyT - 2};
 #endif
+
 // temperature oscillation
 inline constexpr int OSCILLATION{0};
 // ( osc_A*sin(-osc_omgea*step*dt*tau0)/undercooling )
