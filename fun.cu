@@ -37,7 +37,7 @@ inline constexpr bool if_Vp_ramp{true}; // Vp_ramp()  x_pull_back() changed from
 
 // #define    total_time    (100*1000) // ns
 #define    num_fields_output 120 // output fields
-#define    num_tip_output  10 // output tip information
+#define    num_tip_output  120 // output tip information
 #define    num_check_point_output 120 // output check points
 // #define    run_time (8) // hours
 // #define    if_load  0 // 0: start from initial; 1: read check point
@@ -2710,33 +2710,60 @@ void get_precise_tip(real *psi, TIP *tip, long int step)
 
 void save_tip( long int step, constants *h_para, real delta, real T_tip, TIP tip, real V_tip, real *h_c, real *h_phi) // flag
 {
+  // char file_name[256];
+  // snprintf(file_name, sizeof(file_name), "%s/tip.txt", path_input);
+  // FILE *fp = fopen(file_name, "a");
 
-    char file_name[256];
-    snprintf(file_name, sizeof(file_name), "%s/tip.txt", path_input);
-    FILE *fp = fopen(file_name, "a");
-    if (h_para->if_begin_tip==1)
-    {
-        fprintf(fp, "(1)        (2)        (3)        (4)        (5)        (6)        (7)        (8)        (9)        (10)       (11)\n"); 
-        fprintf(fp, "step       t[us]      Δtip       Ttip[K]    Vtip[m/s]  Vp[m/s]    tip.R[nm]  tip.i      tip.j      tip.x      tip.y\n"); 
-        h_para->if_begin_tip=0;
-        V_tip = NAN;
-    }
-    fprintf(fp, "%-10d ", step);                 // (1)
-    fprintf(fp, "%-10g ", step*h_para->dt*tau0*1e-3);    // (2), us
+  std::stringstream tipFilename{};
+  tipFilename << path_input << "/tip.txt";
+  std::filesystem::path tipPath{tipFilename.str()};
+  std::ofstream tipFile{tipFilename.str()};
 
-    fprintf(fp, "%-10g ", delta);  // (3)
-    fprintf(fp, "%-10g ", T_tip);  // (4), K
-    fprintf(fp, "%-10g ", V_tip);  // (5), m/s, instantaneous velocity of the solid-liquid interface
-    fprintf(fp, "%-10g ", Vp_ramp(step*tau0*h_para->dt)); // (6), m/s, pulling velocity
+  if (std::filesystem::exists(tipPath)) {
+    tipFile << "(1)        (2)        (3)        (4)        (5)        (6)        (7)        (8)        (9)        (10)       (11)\n";
+    tipFile << "step       t[us]      Δtip       Ttip[K]    Vtip[m/s]  Vp[m/s]    tip.R[nm]  tip.i      tip.j      tip.x      tip.y\n";
+    // fprintf(fp, "(1)        (2)        (3)        (4)        (5)        (6)        (7)        (8)        (9)        (10)       (11)\n");
+    // fprintf(fp, "step       t[us]      Δtip       Ttip[K]    Vtip[m/s]  Vp[m/s]    tip.R[nm]  tip.i      tip.j      tip.x      tip.y\n");
+    h_para->if_begin_tip=0;
+    V_tip = NAN;
+  }
 
-    fprintf(fp, "%-10g ", tip.R);  // (7), tip radius
-    fprintf(fp, "%-10d ", tip.i);  // (8), position (integar) of the liquid front in the x direction
-    fprintf(fp, "%-10d ", tip.j);  // (9), position (integar) of the liquid front in the x direction
-    fprintf(fp, "%-10g ", tip.x);  // (10), position (integar) of the liquid front in the x direction
-    fprintf(fp, "%-10g ", tip.y);  // (11), position (integar) of the liquid front in the x direction
+  std::cout << std::left;
+  std::cout << std::setw(10) << step;
+  std::cout << std::scientific;
+  std::cout << std::setw(10) << step*h_para->dt*tau0*1e-3;
 
-    fprintf(fp, "\n"); 
-    fclose(fp);
+  // fprintf(fp, "%-10d ", step);                 // (1)
+  // fprintf(fp, "%-10g ", step*h_para->dt*tau0*1e-3);    // (2), us
+
+  std::cout << std::setw(10) << delta;
+  std::cout << std::setw(10) << T_tip;
+  std::cout << std::setw(10) << V_tip;
+  std::cout << std::setw(10) << Vp_ramp(step*tau0*h_para->dt);
+
+  // fprintf(fp, "%-10g ", delta);  // (3)
+  //  fprintf(fp, "%-10g ", T_tip);  // (4), K
+  //  fprintf(fp, "%-10g ", V_tip);  // (5), m/s, instantaneous velocity of the solid-liquid interface
+  //  fprintf(fp, "%-10g ", Vp_ramp(step*tau0*h_para->dt)); // (6), m/s, pulling velocity
+
+  std::cout << std::setw(10) << tip.R;
+  std::cout << std::defaultfloat;
+  std::cout << std::setw(10) << tip.i;
+  std::cout << std::setw(10) << tip.j;
+  std::cout << std::scientific:
+  std::cout << std::setw(10) << tip.x;
+  std::cout << std::setw(10) << tip.y;
+
+  // fprintf(fp, "%-10g ", tip.R);  // (7), tip radius
+  // fprintf(fp, "%-10d ", tip.i);  // (8), position (integar) of the liquid front in the x direction
+  // fprintf(fp, "%-10d ", tip.j);  // (9), position (integar) of the liquid front in the x direction
+  // fprintf(fp, "%-10g ", tip.x);  // (10), position (integar) of the liquid front in the x direction
+  // fprintf(fp, "%-10g ", tip.y);  // (11), position (integar) of the liquid front in the x direction
+
+  std::cout << std::endl;
+
+  // fprintf(fp, "\n");
+  // fclose(fp);
 }
 
 void set_tip_output(real *h_c, real *h_phi, real *h_psi, real *h_T, real *h_T_fine, constants *h_para, real *h_orientation,

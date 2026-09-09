@@ -4,33 +4,43 @@ import matplotlib.offsetbox as mob
 import matplotlib.pyplot as plt
 import numpy as np
 
-data_dir = "../data/"
+project_dir = "../"
 plots_dir = "../plots/"
 frame_delay = 200
+
 default_frames = 200
 long_frames = 265
 short_frames = 195
 last_frames = 370
+std_frames = 120
+
+# data = [
+#     (0.0842,0.0270,long_frames),
+#     (0.260,0.0201,short_frames),
+#     (0.240,0.0304,default_frames),
+#     (0.174,0.0325,last_frames),
+#     (0.287,0.0199,default_frames),
+#     (0.391,0.0117,default_frames),
+# ]
 
 data = [
-    (0.0842,0.0270,long_frames),
-    (0.260,0.0201,short_frames),
-    (0.240,0.0304,default_frames),
-    (0.174,0.0325,last_frames),
-    (0.287,0.0199,default_frames),
-    (0.391,0.0117,default_frames),
+    ("Ti-Nb", "flat-slow", 1, 0.0842, 0.01, std_frames),
+    ("Ti-Nb", "flat-large", 1, 0.24, 0.01, std_frames),
+    ("Ti-Nb", "flat-small", 1, 0.24, 0.01, std_frames),
+    ("Ti-Nb", "ramped-large", 1, 0.0842, 0.018, std_frames),
+    ("Ti-Nb", "ramped-small", 1, 0.0842, 0.018, std_frames),
 ]
 
 class Trial:
-    def __init__(self, vel=0.0, grad=0.0, frames=200):
+    def __init__(self, material="Ti-Nb", name="", num_gpu=1, vel=0.0, grad=0.0, frames=200):
         self.vel = vel
         self.grad = grad
         self.frames = frames
-        self.tag = "Vp_{}_".format(round(vel, 2))
-        snapshot = np.loadtxt(data_dir + self.tag + "c_0.txt", dtype='d')
+        self.tag = "{}:{}-{}-{}-{}".format(material, name, num_gpu, vel, grad)
+        snapshot = np.loadtxt(project_dir + self.tag + "/data/c_0.txt", dtype='d')
         self.init_data = thicken(snapshot)
-        past = np.transpose(np.loadtxt(data_dir + self.tag + "c_history_temp.txt", dtype='d'))
-        last = np.loadtxt(data_dir + self.tag +"c_{}.txt".format(frames), dtype='d')
+        past = np.transpose(np.loadtxt(project_dir + self.tag + "/data/c_history_temp.txt", dtype='d'))
+        last = np.loadtxt(project_dir + self.tag + "/data/c_{}.txt".format(frames), dtype='d')
         combined = np.concatenate((past, last), axis=1)
         self.min = np.min(combined)
         self.max = np.max(combined)
@@ -62,12 +72,16 @@ class AnchoredHScaleBar(mob.AnchoredOffsetbox):
                                        **kwargs)
 
 def main():
-    # temp = Trial(vel=0.174, grad=0.0325, frames=last_frames)
-    # make_visualizations(temp)
-    trials = [Trial(vel, grad, frames) for (vel, grad, frames) in data]
-    for trial in trials:
-        make_visualizations(trial)
-    make_composite_visual(trials)
+    print("I've started to work")
+    temp = Trial(material="Ti-Nb", name="ramped-small", num_gpu=1, vel=0.0842, grad=0.018, frames=std_frames)
+    make_visualizations(temp)
+    # trials = [Trial(material, name, num_gpu, vel, grad, frames) for (material, name, num_gpu, vel, grad, frames) in data]
+    # print("I've assembled a list of trials")
+    # for num, trial in enumerate(trials):
+    #     print("I'm working on trial number ", num, flush=True)
+    #     make_visualizations(trial)
+
+    # make_composite_visual(trials)
     return None
 
 def thicken(data,times=3):
@@ -159,7 +173,7 @@ def make_history(trial):
     hist_ax.add_artist(ob)
     # hist_ax.axvline(trial.xmax-1000)
     # save snapshot animation
-    hist_fig.savefig(plots_dir + trial.tag + "history.png")
+    hist_fig.savefig(plots_dir + trial.tag + "-history.png")
     return None
 
 def make_evolution(trial):
@@ -172,7 +186,7 @@ def make_evolution(trial):
     snap_ax[1].set_ylim(trial.min, trial.max)
     # write step function for a video of the snapshots
     def func(frame):
-        dat = thicken(np.loadtxt(data_dir + trial.tag + "c_{}.txt".format(frame)))
+        dat = thicken(np.loadtxt(project_dir + trial.tag + "/data/c_{}.txt".format(frame)))
         d_min = np.min(dat)
         d_max = np.max(dat)
         snap_artist.set_data(dat)
@@ -184,7 +198,7 @@ def make_evolution(trial):
     # declare funcAnimation
     anim = ani.FuncAnimation(snap_fig, func, trial.frames, interval=frame_delay)
     # save snapshot animation
-    anim.save(plots_dir + trial.tag + "evolution.gif")
+    anim.save(plots_dir + trial.tag + "-evolution.gif", writer="pillow")
     return None
 
 def make_crosssection(trial):
@@ -223,7 +237,7 @@ def make_crosssection(trial):
     ax.axvline(start)
     ax.axvline(end)
     ax.set_title("Width = {} nm".format((end-start)*1.25*0.6))
-    fig.savefig(plots_dir + trial.tag + "cross_section.png")
+    fig.savefig(plots_dir + trial.tag + "-cross_section.png")
 
 if __name__ == "__main__":
     main()

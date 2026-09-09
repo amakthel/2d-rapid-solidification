@@ -35,6 +35,7 @@ pending () {
     num_pending=$(squeue --me -h -t pending -p ${partition} -r | wc -l)
 }
 pending
+
 # echo $num_pending
 # echo $num_pending_threshold
 # echo "got to the pending loop"

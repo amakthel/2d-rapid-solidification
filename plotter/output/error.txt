@@ -1,6 +1,0 @@
-MovieWriter ffmpeg unavailable; using Pillow instead.
-MovieWriter ffmpeg unavailable; using Pillow instead.
-MovieWriter ffmpeg unavailable; using Pillow instead.
-MovieWriter ffmpeg unavailable; using Pillow instead.
-MovieWriter ffmpeg unavailable; using Pillow instead.
-MovieWriter ffmpeg unavailable; using Pillow instead.
