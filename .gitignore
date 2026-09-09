@@ -5,7 +5,9 @@ tmp/
 
 plots/
 init/
+plotter/*.sbatch
 src/seq
 **/data
 *~
 Ti-Nb:*
+plotter/output/
