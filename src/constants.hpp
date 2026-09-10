@@ -7,6 +7,11 @@
 // 0 periodic
 // 1 noFlux
 // 2 dirichlet
+#define GG (10 * 0.001)
+#define EPS1 0.06 // capillary anisotropy strength
+#define EPS2 (0)  // capillary anisotropy strength
+#define EPK1 0.15 // kinetic anisotropy strength
+
 namespace Parameters {
 enum class Model {
   A,
@@ -39,13 +44,16 @@ inline constexpr real tau0{(S * S * W0 * W0) / (Gamma * muk0)};
 inline constexpr real Tmelt{2161.59};           // K, liquidus temperature
 inline constexpr real deltaT0{Tmelt - 2118.35}; // K, Tmelt - T0
 inline constexpr real Dl{2.05};
+inline constexpr real DT{1.1e4}; // (1.2885e4) // nm^2/ns
+
+inline constexpr real G{GG}; // K/nm, temperature gradient
 // nm^2/ns, liquid diffusion coefficient, μm^2/s = 1e-3 nm^2/ns
-// #define    GG     (1.0e-3)  // K/nm, temperature gradient
+
 // #define    Vp      1.0 // m/s
 
-// #define    eps1   0.06 // capillary anisotropy strength
-// #define    eps2   (0) // capillary anisotropy strength
-// #define    epk1   0.15   // kinetic anisotropy strength
+inline constexpr real eps1{EPS1};
+inline constexpr real eps2{EPS2};
+inline constexpr real epk1{EPK1};
 
 // only for dilute limit model
 inline constexpr real ke{0.8146631243899296}; // partition coefficient
@@ -89,8 +97,8 @@ namespace Simulation {
  * 32x8 or 32x4 is best, 64x4 is good, but 16x16 is bad and should be avoided.*/
 // #define Nx_all 768
 // #define Ny_all 832
-inline constexpr std::size_t Nx{0};
-inline constexpr std::size_t Ny{0};
+inline constexpr std::size_t Nx{768};
+inline constexpr std::size_t Ny{832};
 
 #if SS == 1
 inline constexpr real dx{0.8};
@@ -128,8 +136,6 @@ inline constexpr real length_sample{(Nx - 2) * SS * Material::W0 * dx};
 inline constexpr std::size_t NxT{(Nx - 2) / ratio_dxT_dx + 2};
 inline constexpr std::size_t NyT{(Ny - 2) / ratio_dxT_dx + 2};
 
-inline constexpr real DT{1.1e4}; // (1.2885e4) // nm^2/ns
-
 inline constexpr std::size_t BLOCK_SIZE_T_X{64};
 inline constexpr std::size_t BLOCK_SIZE_T_Y{4};
 
@@ -147,7 +153,8 @@ inline constexpr real phi_interface{0.0}; // phi value at the interface
 
 // projections of crystal axes on the lab coordinates
 // 1-9: x'=(x1,x2,x3), y'=(y1,y2,y3), z'=(z1,z2,z3)
-inline constexpr real num_axes{9}; // orientation(num_orientation, num_axes)
+inline constexpr std::size_t num_axes{
+    9};                            // orientation(num_orientation, num_axes)
 inline constexpr real alpha0{0.0}; // [0, 45], Euler angles
 inline constexpr real beta0{0.0};  // [0, 45]
 inline constexpr real gamma0{0.0}; // [0, 45]
