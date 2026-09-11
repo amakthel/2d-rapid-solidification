@@ -7,10 +7,10 @@ Nx_all=$((12 * 64))
 Ny_all=$((13 * 64))
 
 material="Ti-Nb"
-name="ramped-large"
+name="grad-low"
 gpu_num=1
-velocity=$(awk "BEGIN {printf 0.0842 }")   # m/s, pulling velocity
-gradient=$(awk "BEGIN {printf 18*0.001 }") # K/nm, temperature gradient
+velocity=$(awk "BEGIN {printf 0.0842 }")  # m/s, pulling velocity
+gradient=$(awk "BEGIN {printf 5*0.001 }") # K/nm, temperature gradient
 
 tag="${material}:${name}-${gpu_num}-${velocity}-${gradient}"
 
@@ -25,7 +25,7 @@ path_input="$(pwd)/${tag}"
 run_time=8
 num_pending_threshold=10
 sleep_time="10m"
-partition=multigpu,gpu
+partition=rtx-batch
 random_seed=$(awk "BEGIN {printf 0 }")
 
 ######################################################################## sleep if too many jobs are waiting
@@ -39,7 +39,8 @@ pending
 # echo $num_pending_threshold
 # echo "got to the pending loop"
 while test "$num_pending" -gt $num_pending_threshold; do
-	printf 'sleeping %s\n' "$sleep_time"
+	echo "There are currently too many jobs pending!"
+	printf 'Sleeping for %s ...\n' "$sleep_time"
 	sleep $sleep_time
 	pending
 done
@@ -57,6 +58,7 @@ error_name="${path_input}/error_${tag}.txt"
 # discovery has cuda/12.1 as its most recent version
 # explorer has cuda/13.2.0 as its most recent version
 # aicr has cuda/13.1.1 as its most recent version
+echo "Making sbatch script..."
 cat <<EOF >"${sbatch_name}"
 #!/bin/env sh
 #SBATCH --job-name="${job_name}"
@@ -68,9 +70,9 @@ cat <<EOF >"${sbatch_name}"
 #SBATCH --error="${error_name}"
 #SBATCH --time=0${run_time}:00:00
 
-module load cuda/12.3.0
+module load cuda/13.1.1
 
-nvcc -arch=sm_70 \\
+nvcc -arch=sm_80 \\
     --std=c++17 \\
     -Dtotal_time=${total_time} \\
     -Dif_load=${if_load} \\
@@ -92,25 +94,32 @@ echo "\n########################################\n" >> ${path_input}/out.txt
 cat ${out_name} >> ${path_input}/out.txt
 echo "\n########################################\n" >> ${path_input}/out.txt
 EOF
-
+echo "${sbatch_name} has been written."
 ####################################################################### RELAUNCH SETUP
+if test -d "${path_input}"; then
+	echo "Resetting all data in ${path_input}..."
+	rm -r "${path_input}"
+	echo "Reset."
+fi
+echo "Making data directory..."
 mkdir -p "${path_input}/data"
+echo "Making directory for the initializing sbatch scripts..."
 mkdir "${path_input}/init"
 # mkdir "${path_input}/src"
-
-sed '25c\
-#define    if_start_from_step0      0' "${source_name}" >"${path_input}/${source_name}" # turns off starting at step 0
-sed '16c\
-    -Dif_load=1 \\
-17c\
-    -Dpath_input=\\\"./.\\\" \\
-10i#SBATCH --array=1-3%1' "${sbatch_name}" >"${path_input}/${sbatch_name}"
+echo "Directories set."
+echo "Writing new source file and sbatch script for the simulation restarts..."
+sed -E -f ./src.sed "${source_name}" >"${path_input}/${source_name}"
+# turns off starting at step 0
+sed -E -f ./init.sed "${sbatch_name}" >"${path_input}/${sbatch_name}"
+# puts in new input values for restarting the same simulation instead of making a new simulation.
+echo "Files written."
 #######################################################################
-
-notif=$(sbatch "${sbatch_name}")
-firstjobnum=$(echo "${notif}" | awk '/[0-9.]+/ { print $4 }')
-echo "$notif"
-prev_dir="$(pwd)"
-cd "${path_input}/" || exit 1
-sbatch --depend=afterany:"$firstjobnum" "${sbatch_name}"
-cd "$prev_dir" || exit 1
+echo "Launching initial and repeat slurm jobs:"
+# notif=$(sbatch "${sbatch_name}")
+# firstjobnum=$(echo "${notif}" | awk '/[0-9.]+/ { print $4 }')
+# echo "$notif"
+# prev_dir="$(pwd)"
+# cd "${path_input}/" || exit 1
+# sbatch --depend=afterany:"$firstjobnum" "${sbatch_name}"
+# cd "$prev_dir" || exit 1
+echo "Jobs launched."
