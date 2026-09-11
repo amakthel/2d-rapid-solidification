@@ -114,13 +114,13 @@ sed -E -f ./src.sed "${source_name}" >"${path_input}/${source_name}" &&
 # the same simulation instead of making a new simulation.
 #######################################################################
 echo "Launching initial and repeat slurm jobs:"
-notif=$(sbatch "${sbatch_name}")
+notif=$(sbatch oseunthoes) #"${sbatch_name}")
 exitcodeone=$? &&
 	echo "$notif"
 firstjobnum=$(echo "${notif}" | awk '/[0-9.]+/ { print $4 }')
 prev_dir="$(pwd)"
 cd "${path_input}/" || exit 1
-sbatch oeusnteoh #--depend=afterany:"$firstjobnum" "${sbatch_name}"
+sbatch --depend=afterany:"$firstjobnum" "${sbatch_name}"
 exitcodetwo=$?
 cd "$prev_dir" || exit 1
 if test $exitcodeone = "0" -a $exitcodetwo = "0"; then
