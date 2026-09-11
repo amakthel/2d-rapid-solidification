@@ -7,10 +7,10 @@ Nx_all=$((12 * 64))
 Ny_all=$((13 * 64))
 
 material="Ti-Nb"
-name="grad-high"
+name="ramped-slow"
 gpu_num=1
-velocity=$(awk "BEGIN {printf 0.0842 }")   # m/s, pulling velocity
-gradient=$(awk "BEGIN {printf 30*0.001 }") # K/nm, temperature gradient
+velocity=$(awk "BEGIN {printf 0.0842 }")     # m/s, pulling velocity
+gradient=$(awk "BEGIN {printf 23.6*0.001 }") # K/nm, temperature gradient
 
 tag="${material}:${name}-${gpu_num}-${velocity}-${gradient}"
 

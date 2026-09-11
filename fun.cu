@@ -1950,7 +1950,7 @@ void ensure_directory(const char *dirname) {
 __host__ __device__ real Vp_ramp(real t) {
   if constexpr (if_Vp_ramp) {
     t = t * 0.001; // convert ns to us
-    return Vp + 0.0107587 * t;
+    return Vp + 0.0005 * t;
   } else {
     return Vp;
   }
