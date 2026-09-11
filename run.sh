@@ -59,7 +59,7 @@ error_name="${path_input}/error_${tag}.txt"
 # explorer has cuda/13.2.0 as its most recent version
 # aicr has cuda/13.1.1 as its most recent version
 echo "Making sbatch script..."
-cat <<EOF >"${sbatch_name}"
+cat <<EOF >"${sbatch_name}" && echo "${sbatch_name} has been written."
 #!/bin/env sh
 #SBATCH --job-name="${job_name}"
 #SBATCH --partition=${partition}
@@ -94,32 +94,35 @@ echo "\n########################################\n" >> ${path_input}/out.txt
 cat ${out_name} >> ${path_input}/out.txt
 echo "\n########################################\n" >> ${path_input}/out.txt
 EOF
-echo "${sbatch_name} has been written."
 ####################################################################### RELAUNCH SETUP
 if test -d "${path_input}"; then
 	echo "Resetting all data in ${path_input}..."
-	rm -r "${path_input}"
-	echo "Reset."
+	rm -r "${path_input}" &&
+		echo "Reset."
 fi
 echo "Making data directory..."
-mkdir -p "${path_input}/data"
-echo "Making directory for the initializing sbatch scripts..."
-mkdir "${path_input}/init"
+mkdir -p "${path_input}/data" &&
+	echo "Making directory for the initializing sbatch scripts..." &&
+	mkdir "${path_input}/init" &&
+	echo "Directories set."
 # mkdir "${path_input}/src"
-echo "Directories set."
 echo "Writing new source file and sbatch script for the simulation restarts..."
-sed -E -f ./src.sed "${source_name}" >"${path_input}/${source_name}"
-# turns off starting at step 0
-sed -E -f ./init.sed "${sbatch_name}" >"${path_input}/${sbatch_name}"
-# puts in new input values for restarting the same simulation instead of making a new simulation.
-echo "Files written."
+sed -E -f ./src.sed "${source_name}" >"${path_input}/${source_name}" &&
+	sed -E -f ./init.sed "${sbatch_name}" >"${path_input}/${sbatch_name}" &&
+	echo "Files written."
+# turns off starting at step 0 and then puts in new input values for restarting
+# the same simulation instead of making a new simulation.
 #######################################################################
 echo "Launching initial and repeat slurm jobs:"
-notif=$(sbatch "${sbatch_name}")
+notif=$(sbatch isonetauh)
+exitcodeone=$? &&
+	echo "$notif"
 firstjobnum=$(echo "${notif}" | awk '/[0-9.]+/ { print $4 }')
-echo "$notif"
 prev_dir="$(pwd)"
 cd "${path_input}/" || exit 1
-sbatch --depend=afterany:"$firstjobnum" "${sbatch_name}"
+sbatch oeusnteoh #--depend=afterany:"$firstjobnum" "${sbatch_name}"
+exitcodetwo=$?
 cd "$prev_dir" || exit 1
-echo "Jobs launched."
+if test $exitcodeone = "0" -a $exitcodetwo = "0"; then
+	echo "Jobs launched."
+fi
