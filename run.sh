@@ -114,7 +114,7 @@ sed -E -f ./src.sed "${source_name}" >"${path_input}/${source_name}" &&
 # the same simulation instead of making a new simulation.
 #######################################################################
 echo "Launching initial and repeat slurm jobs:"
-notif=$(sbatch isonetauh)
+notif=$(sbatch "${sbatch_name}")
 exitcodeone=$? &&
 	echo "$notif"
 firstjobnum=$(echo "${notif}" | awk '/[0-9.]+/ { print $4 }')
