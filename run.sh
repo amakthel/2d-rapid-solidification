@@ -70,7 +70,7 @@ cat <<EOF >"${sbatch_name}" && echo "${sbatch_name} has been written."
 #SBATCH --error="${error_name}"
 #SBATCH --time=0${run_time}:00:00
 
-module load cuda/13.1.1
+module load cuda/13.2.0
 
 nvcc -arch=sm_80 \\
     --std=c++17 \\
