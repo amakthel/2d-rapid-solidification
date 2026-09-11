@@ -7,10 +7,10 @@ Nx_all=$((12 * 64))
 Ny_all=$((13 * 64))
 
 material="Ti-Nb"
-name="grad-low"
+name="grad-high"
 gpu_num=1
-velocity=$(awk "BEGIN {printf 0.0842 }")  # m/s, pulling velocity
-gradient=$(awk "BEGIN {printf 5*0.001 }") # K/nm, temperature gradient
+velocity=$(awk "BEGIN {printf 0.0842 }")   # m/s, pulling velocity
+gradient=$(awk "BEGIN {printf 30*0.001 }") # K/nm, temperature gradient
 
 tag="${material}:${name}-${gpu_num}-${velocity}-${gradient}"
 
@@ -115,11 +115,11 @@ sed -E -f ./init.sed "${sbatch_name}" >"${path_input}/${sbatch_name}"
 echo "Files written."
 #######################################################################
 echo "Launching initial and repeat slurm jobs:"
-# notif=$(sbatch "${sbatch_name}")
-# firstjobnum=$(echo "${notif}" | awk '/[0-9.]+/ { print $4 }')
-# echo "$notif"
-# prev_dir="$(pwd)"
-# cd "${path_input}/" || exit 1
-# sbatch --depend=afterany:"$firstjobnum" "${sbatch_name}"
-# cd "$prev_dir" || exit 1
+notif=$(sbatch "${sbatch_name}")
+firstjobnum=$(echo "${notif}" | awk '/[0-9.]+/ { print $4 }')
+echo "$notif"
+prev_dir="$(pwd)"
+cd "${path_input}/" || exit 1
+sbatch --depend=afterany:"$firstjobnum" "${sbatch_name}"
+cd "$prev_dir" || exit 1
 echo "Jobs launched."
