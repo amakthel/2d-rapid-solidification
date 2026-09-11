@@ -25,7 +25,7 @@ path_input="$(pwd)/${tag}"
 run_time=8
 num_pending_threshold=10
 sleep_time="10m"
-partition=rtx-batch
+partition=gpu,multigpu
 random_seed=$(awk "BEGIN {printf 0 }")
 
 ######################################################################## sleep if too many jobs are waiting
