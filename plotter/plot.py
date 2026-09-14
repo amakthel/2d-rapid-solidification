@@ -1,3 +1,4 @@
+import math
 import matplotlib.animation as ani
 from matplotlib.lines import Line2D
 import matplotlib.offsetbox as mob
@@ -52,7 +53,7 @@ class Trial:
         self.min = np.min(combined)
         self.max = np.max(combined)
         if name == "ramped-small":
-            self.histor_data = thicken(combined[: ceil(combined.shape[1] / 3)])
+            self.histor_data = thicken(combined[: math.ceil(combined.shape[1] / 3)])
         else:
             self.history_data = thicken(combined)
         self.ymax, self.xmax = self.history_data.shape
