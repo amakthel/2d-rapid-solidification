@@ -25,7 +25,7 @@ path_input="$(pwd)/${tag}"
 run_time=4
 num_pending_threshold=10
 sleep_time="10m"
-partition=multigpu,gpu
+partition=rtx-devel
 random_seed=$(awk "BEGIN {printf 0 }")
 
 ######################################################################## sleep if too many jobs are waiting
@@ -70,9 +70,9 @@ cat <<EOF >"${sbatch_name}" && echo "${sbatch_name} has been written."
 #SBATCH --error="${error_name}"
 #SBATCH --time=0${run_time}:00:00
 
-module load cuda/12.3.0
+module load cuda/13.1.1
 
-nvcc -arch=sm_75 \\
+nvcc -arch=sm_80 \\
     --std=c++17 \\
     -Dtotal_time=${total_time} \\
     -Dif_load=${if_load} \\

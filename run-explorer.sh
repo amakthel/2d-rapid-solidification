@@ -56,7 +56,12 @@ error_name="${path_input}/error_${tag}.txt"
 
 # currently NO debug switch in there, you'll have to add it yourself.
 # discovery has cuda/12.1 as its most recent version
-# explorer has cuda/13.2.0 as its most recent version
+#
+# explorer has cuda/13.2.0 as its most recent version, but you should use 12.3.0
+# until otherwise determined, because later versions depricate older cards, and
+# there just aren't enough newer cards to ensure you can consistently get a
+# device when your batch script comes up.
+#
 # aicr has cuda/13.1.1 as its most recent version
 echo "Making sbatch script..."
 cat <<EOF >"${sbatch_name}" && echo "${sbatch_name} has been written."
