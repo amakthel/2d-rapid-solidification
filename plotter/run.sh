@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # This shell script both generates a sbatch script, and uses it to launch a local
 # python script. It always overwrites the sbatch script that exists (note that
@@ -15,7 +15,7 @@ output="$(pwd)/output"
 timebar="\"==================Current Time:\$(date)==================\""
 endbar="\"================================================================================\""
 
-cat <<EOF > $scriptname
+cat <<EOF >$scriptname
 #!/usr/bin/env sh
 #SBATCH --partition=short
 #SBATCH --nodes=1
