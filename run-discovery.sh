@@ -55,8 +55,12 @@ out_name="${path_input}/out_temp_${tag}.txt"
 error_name="${path_input}/error_${tag}.txt"
 
 # currently NO debug switch in there, you'll have to add it yourself.
-# discovery has cuda/12.1 as its most recent version
-# explorer has cuda/13.2.0 as its most recent version
+#
+# discoveryhas cuda/12.1 as its most recent version, and requires a gcc module.
+#
+# explorer has cuda/13.2.0 as its most recent version, but doesn't have enough
+# devices that work with versions past 12.3.0.
+#
 # aicr has cuda/13.1.1 as its most recent version
 echo "Making sbatch script..."
 cat <<EOF >"${sbatch_name}" && echo "${sbatch_name} has been written."
@@ -71,6 +75,7 @@ cat <<EOF >"${sbatch_name}" && echo "${sbatch_name} has been written."
 #SBATCH --time=0${run_time}:00:00
 
 module load cuda/12.1
+module load gcc/11.1.0
 
 nvcc -arch=sm_70 \\
     --std=c++17 \\

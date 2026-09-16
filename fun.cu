@@ -64,14 +64,14 @@ inline constexpr bool if_Vp_ramp{true};
 #define W0 0.25            // nm, capillary length
 #define Gamma (199.0)
 // K*nm, Gibbs-Thomson coefficient. Taken as reasonable compromise
-// between 203.359 and 194.517.
-#define muk0 (0.57)
+// between 203.359 and 194.517. FIXME
+#define muk0 (0.5795)
 // nm/ns/K, interface kinetic coefficient, unprincpled selection
 // between 0.7 and 0.49
-#define tau0 (pow2(SS * W0) / (Gamma * muk0)) // ns, 5^2/196/0.5 = 0.2551 ns
-#define Tmelt (2161.59)                       // K, liquidus temperature
-#define deltaT0 (Tmelt - 2118.35)             // K, Tmelt - T0
-#define Dl (2.05)
+#define tau0 (pow2(SS * W0) / (Gamma * muk0)) // ns, relaxation time
+#define Tmelt (2750.0)                       // K, melting point at c=0
+#define deltaT0 (Tmelt - 2161.59)             // K, Tmelt - T_l FIXME
+#define Dl (0.9)
 // nm^2/ns, liquid diffusion coefficient, μm^2/s = 1e-3 nm^2/ns
 // #define    GG     (1.0e-3)  // K/nm, temperature gradient
 // #define    Vp      1.0 // m/s
@@ -86,13 +86,13 @@ inline constexpr bool if_Vp_ramp{true};
 #define d0 (Gamma / deltaT0)                          //
 #define lambda (-bb * a1 * SS * W0 / d0 / (1.0 - ke)) //
 
-#define latentHeat (22003.0)  // J/mol, latent heat
-#define molar_weight (64.418) // g/mol, molar average
-#define num_moles (93353.43470588748)
+#define latentHeat (22003.0)  // J/mol, latent heat FIXME
+#define molar_weight (64.419) // g/mol, molar average
+#define num_moles (90183.49558101478)
 // mol/m^3, reciprocal of molar average of volumes
 #define cp (40.0)
 // J/mol/K, specific heat, approximating between the solid and liquid
-// heat capacities of the alloy
+// heat capacities of the alloy FIXME
 #define Lcp (latentHeat / cp)                       // K, // (340.5)
 #define density (1.0e-6 * num_moles * molar_weight) // g/cm^3
 #define latentHeat2 (latentHeat * num_moles)        // J/m^3, latent heat
@@ -100,7 +100,7 @@ inline constexpr bool if_Vp_ramp{true};
 // 0.145811 // J/m^2, solid-liquid interfacial free-energy ...
 
 #define RR 8.3145    // J/mol/K, gas constant
-#define v0 (1.17e-5) // old(1.071e-5) // m^3/mol, average molar volume
+#define v0 (1.1088503429118772e-05) // m^3/mol, average molar volume
 #define hh (surface_tension / (a1 * SS * W0 * 1.0e-9)) // J/m^3
 #define h0 (RR * Tmelt / v0)                           // J/m^3
 

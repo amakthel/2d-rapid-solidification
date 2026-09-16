@@ -6,6 +6,7 @@ tmp/
 plots/
 init/
 plotter/*.sbatch
+plotter/tip-vel-pos.png
 src/seq
 **/data
 *~

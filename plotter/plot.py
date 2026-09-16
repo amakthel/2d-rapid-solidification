@@ -53,7 +53,7 @@ class Trial:
         self.min = np.min(combined)
         self.max = np.max(combined)
         if name == "ramped-small":
-            self.histor_data = thicken(combined[: math.ceil(combined.shape[1] / 3)])
+            self.history_data = thicken(combined[: math.ceil(combined.shape[1] / 10)])
         else:
             self.history_data = thicken(combined)
         self.ymax, self.xmax = self.history_data.shape
@@ -193,15 +193,15 @@ def make_history(trial):
         trial.history_data, vmin=trial.min - 0.02, vmax=trial.max + 0.02, cmap="RdBu"
     )
     # hist_ax.set_title("full history of alloy solidification")
-    hist_fig.set_figwidth(16)
     hist_fig.set_figheight(3)
+    hist_fig.set_figwidth(3 * trial.xmax / trial.ymax)
     # hist_ax.set_yticks(np.arange(0, ymax, 1000))
     # hist_ax.set_xticks(np.arange(0, xmax, 1000))
     hist_ax.set_aspect("equal")
     hist_ax.set_xlim(0, trial.xmax)
-    hist_ax.set_xticks([])
+    # hist_ax.set_xticks([])
     hist_ax.set_ylim(0, trial.ymax)
-    hist_ax.set_yticks([])
+    # hist_ax.set_yticks([])
     for axis in ["top", "bottom", "left", "right"]:
         hist_ax.spines[axis].set_linewidth(0)
     hist_ax.set_title(f"$V = {trial.vel}$ m/s $G = {trial.grad}$ K/nm")
@@ -285,7 +285,6 @@ def make_crosssection(trial):
             else:
                 end = idx
         prev = conc
-    print(start, end)
     fig, ax = plt.subplots()
     ys = np.arange(0, trial.ymax, 1)
     ax.plot(ys, trial.history_data[:, trial.xmax - steps_back])
