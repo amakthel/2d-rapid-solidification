@@ -88,6 +88,7 @@ inline constexpr bool if_Vp_ramp{true};
 
 #define latentHeat (22003.0)  // J/mol, latent heat FIXME
 #define molar_weight (64.419) // g/mol, molar average
+#define v0 (1.1088503429118772e-05) // m^3/mol, average molar volume
 #define num_moles (90183.49558101478)
 // mol/m^3, reciprocal of molar average of volumes
 #define cp (40.0)
@@ -100,7 +101,6 @@ inline constexpr bool if_Vp_ramp{true};
 // 0.145811 // J/m^2, solid-liquid interfacial free-energy ...
 
 #define RR 8.3145    // J/mol/K, gas constant
-#define v0 (1.1088503429118772e-05) // m^3/mol, average molar volume
 #define hh (surface_tension / (a1 * SS * W0 * 1.0e-9)) // J/m^3
 #define h0 (RR * Tmelt / v0)                           // J/m^3
 

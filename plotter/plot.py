@@ -3,7 +3,10 @@ import matplotlib.animation as ani
 from matplotlib.lines import Line2D
 import matplotlib.offsetbox as mob
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
+
+matplotlib.rcParams["text.usetex"] = True
 
 project_dir = "../"
 plots_dir = "../plots/"
@@ -33,6 +36,12 @@ data = [
 ]
 
 
+# data = [
+#     ("Ti-Nb", "grad-low", 1, 0.0842, 0.005, std_frames),
+#     ("Ti-Nb", "grad-high", 1, 0.0842, 0.0325, std_frames),
+# ]
+
+
 class Trial:
     def __init__(
         self, material="Ti-Nb", name="", num_gpu=1, vel=0.0, grad=0.0, frames=200
@@ -52,10 +61,7 @@ class Trial:
         combined = np.concatenate((past, last), axis=1)
         self.min = np.min(combined)
         self.max = np.max(combined)
-        if name == "ramped-small":
-            self.history_data = thicken(combined[: math.ceil(combined.shape[1] / 10)])
-        else:
-            self.history_data = thicken(combined)
+        self.history_data = thicken(combined)
         self.ymax, self.xmax = self.history_data.shape
 
 
@@ -185,12 +191,15 @@ def make_visualizations(trial):
     return None
 
 
-def make_history(trial):
+def make_history(trial, endpoint=trial.xmax):
     print("making history for", trial.tag)
     # plot history data using imshow
     hist_fig, hist_ax = plt.subplots()
     hist_artist = hist_ax.imshow(
-        trial.history_data, vmin=trial.min - 0.02, vmax=trial.max + 0.02, cmap="RdBu"
+        trial.history_data[:, :endpoint],
+        vmin=trial.min - 0.02,
+        vmax=trial.max + 0.02,
+        cmap="RdBu",
     )
     # hist_ax.set_title("full history of alloy solidification")
     hist_fig.set_figheight(3)
